@@ -1,0 +1,4 @@
+RewriteEngine On
+
+RewriteCond $1 !^(test1\.php)
+RewriteRule ^(.*)$ test1.php?url=$1 [L]
