@@ -1,7 +1,4 @@
 <?php
-/*
-This script will process url shorten and redirect to actual url
-*/
 
 define('TABLE', 'url_shorters');
 define('SEC_KEY', 'sw2w5f2g');
@@ -62,7 +59,7 @@ $iv = mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB),
 $decryptedId = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, SEC_KEY, $encryptedId, MCRYPT_MODE_CBC, $iv);
 
 // Perform queries 
-$query = "SELECT * FROM ".TABLE." where id = ".$decryptedId;
+$query = "SELECT * FROM ".TABLE." where id = ".$decryptedId." and used = 0";
 
 if ($result = $mysqli->query($query)) {
 
@@ -78,6 +75,11 @@ if ($result = $mysqli->query($query)) {
 mysqli_close($con);
 
 if($url != null){
+    
+    // update used
+    $query = "update ".TABLE." set used = 1 where id = ".$decryptedId;
+    $mysqli->query($query);
+    
     header('Location: ' . $url);
 }else{
     header('HTTP/1.0 404 Not Found');
